@@ -172,3 +172,115 @@ class SalesManager:
         
         conn.close()
         return sales
+    
+    def get_sale(self, sale_id: int) -> Optional[Dict]:
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT s.id, s.product_id, p.name, s.sale_date, s.quantity, 
+                   s.platform, s.revenue, s.profit, s.created_at
+            FROM sales s
+            JOIN products p ON s.product_id = p.id
+            WHERE s.id = ?
+        ''', (sale_id,))
+        
+        row = cursor.fetchone()
+        conn.close()
+        
+        if row:
+            return {
+                'id': row[0],
+                'product_id': row[1],
+                'product_name': row[2],
+                'sale_date': row[3],
+                'quantity': row[4],
+                'platform': row[5],
+                'revenue': row[6],
+                'profit': row[7],
+                'created_at': row[8]
+            }
+        return None
+    
+    def update_sale(self, sale_id: int, product_id: int, sale_date: date, 
+                   quantity: int, platform: str) -> bool:
+        if platform not in ['네이버', '쿠팡', '자사몰']:
+            raise ValueError("Platform must be 네이버, 쿠팡, or 자사몰")
+        
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        
+        # Get old sale info to restore stock
+        cursor.execute('SELECT product_id, quantity FROM sales WHERE id = ?', (sale_id,))
+        old_sale = cursor.fetchone()
+        if not old_sale:
+            conn.close()
+            return False
+        
+        old_product_id, old_quantity = old_sale
+        
+        # Restore old stock
+        cursor.execute('UPDATE products SET quantity = quantity + ? WHERE id = ?', 
+                      (old_quantity, old_product_id))
+        
+        # Check new product stock
+        cursor.execute('SELECT price, margin_naver, margin_coupang, margin_self, quantity FROM products WHERE id = ?', 
+                      (product_id,))
+        product = cursor.fetchone()
+        
+        if not product:
+            conn.close()
+            raise ValueError("Product not found")
+        
+        price, margin_naver, margin_coupang, margin_self, current_quantity = product
+        
+        if quantity > current_quantity:
+            conn.close()
+            raise ValueError(f"Insufficient stock. Available: {current_quantity}, Requested: {quantity}")
+        
+        # Calculate new revenue and profit
+        margin_map = {'네이버': margin_naver, '쿠팡': margin_coupang, '자사몰': margin_self}
+        margin = margin_map[platform]
+        revenue = price * quantity
+        profit = revenue * (margin / 100)
+        
+        # Update sale
+        cursor.execute('''
+            UPDATE sales 
+            SET product_id = ?, sale_date = ?, quantity = ?, 
+                platform = ?, revenue = ?, profit = ?
+            WHERE id = ?
+        ''', (product_id, sale_date, quantity, platform, revenue, profit, sale_id))
+        
+        # Deduct new stock
+        cursor.execute('UPDATE products SET quantity = quantity - ? WHERE id = ?', 
+                      (quantity, product_id))
+        
+        conn.commit()
+        conn.close()
+        return True
+    
+    def delete_sale(self, sale_id: int) -> bool:
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        
+        # Get sale info to restore stock
+        cursor.execute('SELECT product_id, quantity FROM sales WHERE id = ?', (sale_id,))
+        sale = cursor.fetchone()
+        
+        if not sale:
+            conn.close()
+            return False
+        
+        product_id, quantity = sale
+        
+        # Restore stock
+        cursor.execute('UPDATE products SET quantity = quantity + ? WHERE id = ?', 
+                      (quantity, product_id))
+        
+        # Delete sale
+        cursor.execute('DELETE FROM sales WHERE id = ?', (sale_id,))
+        
+        conn.commit()
+        conn.close()
+        return True

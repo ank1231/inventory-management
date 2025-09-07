@@ -99,6 +99,7 @@
                 <th>매출</th>
                 <th>순이익</th>
                 <th>기록일시</th>
+                <th>작업</th>
             </tr>
         </thead>
         <tbody>
@@ -121,6 +122,13 @@
                 <td>₩{{ "{:,.0f}".format(sale.revenue) }}</td>
                 <td>₩{{ "{:,.0f}".format(sale.profit) }}</td>
                 <td>{{ sale.created_at }}</td>
+                <td>
+                    <a href="/sales/edit/{{ sale.id }}" class="btn btn-sm btn-primary">수정</a>
+                    <form method="post" action="/sales/delete/{{ sale.id }}" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" 
+                                onclick="return confirm('정말 삭제하시겠습니까? 재고가 복원됩니다.')">삭제</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

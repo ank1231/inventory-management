@@ -122,6 +122,33 @@ def add_sale():
     today = date.today().strftime('%Y-%m-%d')
     return render_template('add_sale.html', products=products, today=today)
 
+@app.route('/sales/edit/<int:sale_id>', methods=['GET', 'POST'])
+def edit_sale(sale_id):
+    sale = sales_manager.get_sale(sale_id)
+    if not sale:
+        return redirect(url_for('sales_page'))
+    
+    if request.method == 'POST':
+        try:
+            product_id = int(request.form['product_id'])
+            sale_date = request.form['sale_date']
+            quantity = int(request.form['quantity'])
+            platform = request.form['platform']
+            
+            sales_manager.update_sale(sale_id, product_id, sale_date, quantity, platform)
+            return redirect(url_for('sales_page'))
+        except Exception as e:
+            products = manager.get_all_products()
+            return render_template('edit_sale.html', sale=sale, products=products, error=str(e))
+    
+    products = manager.get_all_products()
+    return render_template('edit_sale.html', sale=sale, products=products)
+
+@app.route('/sales/delete/<int:sale_id>', methods=['POST'])
+def delete_sale(sale_id):
+    sales_manager.delete_sale(sale_id)
+    return redirect(url_for('sales_page'))
+
 @app.route('/reports')
 def reports_page():
     today = date.today()
