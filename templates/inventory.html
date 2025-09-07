@@ -38,6 +38,7 @@
             <tr>
                 <th>ID</th>
                 <th>상품명</th>
+                <th>옵션</th>
                 <th>가격</th>
                 <th>네이버 마진</th>
                 <th>쿠팡 마진</th>
@@ -52,6 +53,7 @@
             <tr {% if product.quantity < 10 %}class="table-warning"{% endif %}>
                 <td>{{ product.id }}</td>
                 <td>{{ product.name }}</td>
+                <td>{{ product.options if product.options else '-' }}</td>
                 <td>₩{{ "{:,.0f}".format(product.price) }}</td>
                 <td>{{ product.margin_naver }}%</td>
                 <td>{{ product.margin_coupang }}%</td>

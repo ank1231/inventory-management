@@ -18,6 +18,11 @@
             </div>
             
             <div class="mb-3">
+                <label for="options" class="form-label">옵션 (예: 색상: 빨강, 파랑 / 사이즈: S, M, L)</label>
+                <input type="text" class="form-control" id="options" name="options" value="{{ product.options if product.options else '' }}" placeholder="옵션을 입력하세요 (선택사항)">
+            </div>
+            
+            <div class="mb-3">
                 <label for="price" class="form-label">가격 (원)</label>
                 <input type="number" class="form-control" id="price" name="price" min="0" step="100" value="{{ product.price }}" required>
             </div>

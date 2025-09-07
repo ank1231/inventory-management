@@ -18,7 +18,7 @@
                     <option value="">상품을 선택하세요</option>
                     {% for product in products %}
                     <option value="{{ product.id }}">
-                        {{ product.name }} (재고: {{ product.quantity }}개, 가격: ₩{{ "{:,.0f}".format(product.price) }})
+                        {{ product.name }}{% if product.options %} [{{ product.options }}]{% endif %} (재고: {{ product.quantity }}개, 가격: ₩{{ "{:,.0f}".format(product.price) }})
                     </option>
                     {% endfor %}
                 </select>

@@ -28,13 +28,14 @@ def add_product():
     if request.method == 'POST':
         try:
             name = request.form['name']
+            options = request.form.get('options', '')
             price = float(request.form['price'])
             margin_naver = float(request.form['margin_naver'])
             margin_coupang = float(request.form['margin_coupang'])
             margin_self = float(request.form['margin_self'])
             quantity = int(request.form['quantity'])
             
-            manager.add_product(name, price, margin_naver, margin_coupang, margin_self, quantity)
+            manager.add_product(name, options, price, margin_naver, margin_coupang, margin_self, quantity)
             return redirect(url_for('inventory_page'))
         except Exception as e:
             return render_template('add_product.html', error=str(e))
@@ -52,6 +53,8 @@ def edit_product(product_id):
             updates = {}
             if request.form.get('name'):
                 updates['name'] = request.form['name']
+            if request.form.get('options') is not None:
+                updates['options'] = request.form['options']
             if request.form.get('price'):
                 updates['price'] = float(request.form['price'])
             if request.form.get('margin_naver'):

@@ -7,7 +7,7 @@ class InventoryManager:
     def __init__(self):
         database.init_database()
     
-    def add_product(self, name: str, price: float, margin_naver: float, 
+    def add_product(self, name: str, options: str, price: float, margin_naver: float, 
                    margin_coupang: float, margin_self: float, quantity: int = 0) -> int:
         if price < 0:
             raise ValueError("Price must be non-negative")
@@ -20,9 +20,9 @@ class InventoryManager:
         cursor = conn.cursor()
         
         cursor.execute('''
-            INSERT INTO products (name, price, margin_naver, margin_coupang, margin_self, quantity)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (name, price, margin_naver, margin_coupang, margin_self, quantity))
+            INSERT INTO products (name, options, price, margin_naver, margin_coupang, margin_self, quantity)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (name, options, price, margin_naver, margin_coupang, margin_self, quantity))
         
         product_id = cursor.lastrowid
         conn.commit()
@@ -35,7 +35,7 @@ class InventoryManager:
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT id, name, price, margin_naver, margin_coupang, margin_self, quantity, 
+            SELECT id, name, options, price, margin_naver, margin_coupang, margin_self, quantity, 
                    created_at, updated_at
             FROM products
             WHERE id = ?
@@ -48,13 +48,14 @@ class InventoryManager:
             return {
                 'id': row[0],
                 'name': row[1],
-                'price': row[2],
-                'margin_naver': row[3],
-                'margin_coupang': row[4],
-                'margin_self': row[5],
-                'quantity': row[6],
-                'created_at': row[7],
-                'updated_at': row[8]
+                'options': row[2],
+                'price': row[3],
+                'margin_naver': row[4],
+                'margin_coupang': row[5],
+                'margin_self': row[6],
+                'quantity': row[7],
+                'created_at': row[8],
+                'updated_at': row[9]
             }
         return None
     
@@ -72,7 +73,7 @@ class InventoryManager:
         sort_column = valid_sort.get(sort_by, 'name')
         
         query = '''
-            SELECT id, name, price, margin_naver, margin_coupang, margin_self, quantity,
+            SELECT id, name, options, price, margin_naver, margin_coupang, margin_self, quantity,
                    price * quantity as value, created_at, updated_at
             FROM products
         '''
@@ -93,20 +94,21 @@ class InventoryManager:
             products.append({
                 'id': row[0],
                 'name': row[1],
-                'price': row[2],
-                'margin_naver': row[3],
-                'margin_coupang': row[4],
-                'margin_self': row[5],
-                'quantity': row[6],
-                'value': row[7],
-                'created_at': row[8],
-                'updated_at': row[9]
+                'options': row[2],
+                'price': row[3],
+                'margin_naver': row[4],
+                'margin_coupang': row[5],
+                'margin_self': row[6],
+                'quantity': row[7],
+                'value': row[8],
+                'created_at': row[9],
+                'updated_at': row[10]
             })
         
         return products
     
     def update_product(self, product_id: int, **kwargs) -> bool:
-        allowed_fields = ['name', 'price', 'margin_naver', 'margin_coupang', 'margin_self', 'quantity']
+        allowed_fields = ['name', 'options', 'price', 'margin_naver', 'margin_coupang', 'margin_self', 'quantity']
         
         if 'price' in kwargs and kwargs['price'] < 0:
             raise ValueError("Price must be non-negative")
@@ -203,7 +205,7 @@ if __name__ == "__main__":
     
     print("Testing InventoryManager...")
     
-    product_id = manager.add_product("Test Product", 10000, 10, 15, 20, 50)
+    product_id = manager.add_product("Test Product", "색상: 빨강, 파랑", 10000, 10, 15, 20, 50)
     print(f"Added product with ID: {product_id}")
     
     product = manager.get_product(product_id)
