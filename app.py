@@ -48,8 +48,7 @@ def copy_product(product_id):
     if not product:
         return redirect(url_for('inventory_page'))
     
-    # 복사된 상품 정보를 전달 (이름은 "복사본 - " 접두사 추가)
-    product['name'] = f"복사본 - {product['name']}"
+    # 복사된 상품 정보를 전달
     product['quantity'] = 0  # 초기 재고는 0으로 설정
     
     return render_template('add_product.html', copy_from=product)
