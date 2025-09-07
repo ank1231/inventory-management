@@ -3,7 +3,13 @@
 {% block title %}상품 추가 - 재고관리 시스템{% endblock %}
 
 {% block content %}
-<h1>새 상품 추가</h1>
+<h1>{% if copy_from %}기존 상품 복사하여 새 상품 추가{% else %}새 상품 추가{% endif %}</h1>
+
+{% if copy_from %}
+<div class="alert alert-info">
+    <strong>알림:</strong> "{{ copy_from.name|replace('복사본 - ', '') }}" 상품을 기반으로 새 상품을 추가합니다. 필요한 정보를 수정해주세요.
+</div>
+{% endif %}
 
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
@@ -14,39 +20,47 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label for="name" class="form-label">상품명</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <input type="text" class="form-control" id="name" name="name" 
+                       value="{{ copy_from.name if copy_from else '' }}" required>
             </div>
             
             <div class="mb-3">
                 <label for="options" class="form-label">옵션 (예: 색상: 빨강, 파랑 / 사이즈: S, M, L)</label>
-                <input type="text" class="form-control" id="options" name="options" placeholder="옵션을 입력하세요 (선택사항)">
+                <input type="text" class="form-control" id="options" name="options" 
+                       value="{{ copy_from.options if copy_from and copy_from.options else '' }}" 
+                       placeholder="옵션을 입력하세요 (선택사항)">
             </div>
             
             <div class="mb-3">
                 <label for="price" class="form-label">가격 (원)</label>
-                <input type="number" class="form-control" id="price" name="price" min="0" step="100" required>
+                <input type="number" class="form-control" id="price" name="price" min="0" step="100" 
+                       value="{{ copy_from.price if copy_from else '' }}" required>
             </div>
             
             <div class="mb-3">
                 <label for="quantity" class="form-label">초기 재고 수량</label>
-                <input type="number" class="form-control" id="quantity" name="quantity" min="0" value="0" required>
+                <input type="number" class="form-control" id="quantity" name="quantity" min="0" 
+                       value="{{ copy_from.quantity if copy_from else 0 }}" required>
             </div>
         </div>
         
         <div class="col-md-6">
             <div class="mb-3">
                 <label for="margin_naver" class="form-label">네이버 마진율 (%)</label>
-                <input type="number" class="form-control" id="margin_naver" name="margin_naver" min="0" max="100" step="0.1" required>
+                <input type="number" class="form-control" id="margin_naver" name="margin_naver" min="0" max="100" step="0.1" 
+                       value="{{ copy_from.margin_naver if copy_from else '' }}" required>
             </div>
             
             <div class="mb-3">
                 <label for="margin_coupang" class="form-label">쿠팡 마진율 (%)</label>
-                <input type="number" class="form-control" id="margin_coupang" name="margin_coupang" min="0" max="100" step="0.1" required>
+                <input type="number" class="form-control" id="margin_coupang" name="margin_coupang" min="0" max="100" step="0.1" 
+                       value="{{ copy_from.margin_coupang if copy_from else '' }}" required>
             </div>
             
             <div class="mb-3">
                 <label for="margin_self" class="form-label">자사몰 마진율 (%)</label>
-                <input type="number" class="form-control" id="margin_self" name="margin_self" min="0" max="100" step="0.1" required>
+                <input type="number" class="form-control" id="margin_self" name="margin_self" min="0" max="100" step="0.1" 
+                       value="{{ copy_from.margin_self if copy_from else '' }}" required>
             </div>
         </div>
     </div>

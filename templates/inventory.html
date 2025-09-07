@@ -66,6 +66,7 @@
                 </td>
                 <td>₩{{ "{:,.0f}".format(product.value) }}</td>
                 <td>
+                    <a href="/product/copy/{{ product.id }}" class="btn btn-sm btn-success">복사</a>
                     <a href="/product/edit/{{ product.id }}" class="btn btn-sm btn-primary">수정</a>
                     <form method="post" action="/product/delete/{{ product.id }}" style="display: inline;">
                         <button type="submit" class="btn btn-sm btn-danger" 

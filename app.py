@@ -42,6 +42,18 @@ def add_product():
     
     return render_template('add_product.html')
 
+@app.route('/product/copy/<int:product_id>')
+def copy_product(product_id):
+    product = manager.get_product(product_id)
+    if not product:
+        return redirect(url_for('inventory_page'))
+    
+    # 복사된 상품 정보를 전달 (이름은 "복사본 - " 접두사 추가)
+    product['name'] = f"복사본 - {product['name']}"
+    product['quantity'] = 0  # 초기 재고는 0으로 설정
+    
+    return render_template('add_product.html', copy_from=product)
+
 @app.route('/product/edit/<int:product_id>', methods=['GET', 'POST'])
 def edit_product(product_id):
     product = manager.get_product(product_id)
