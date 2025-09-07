@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}리포트 - 재고관리 시스템{% endblock %}
+
+{% block content %}
+<h1>리포트</h1>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <form method="get" action="/reports" class="row g-3">
+            <div class="col-md-3">
+                <label for="period" class="form-label">기간 선택</label>
+                <select class="form-select" id="period" name="period" onchange="this.form.submit()">
+                    <option value="day" {% if period == 'day' %}selected{% endif %}>일간</option>
+                    <option value="week" {% if period == 'week' %}selected{% endif %}>주간</option>
+                    <option value="month" {% if period == 'month' %}selected{% endif %}>월간</option>
+                    <option value="custom" {% if period == 'custom' %}selected{% endif %}>사용자 지정</option>
+                </select>
+            </div>
+            {% if period == 'custom' %}
+            <div class="col-md-3">
+                <label for="start_date" class="form-label">시작일</label>
+                <input type="date" class="form-control" name="start_date" value="{{ start_date }}">
+            </div>
+            <div class="col-md-3">
+                <label for="end_date" class="form-label">종료일</label>
+                <input type="date" class="form-control" name="end_date" value="{{ end_date }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary d-block w-100">조회</button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<h3>판매 실적 요약</h3>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">총 판매 건수</h6>
+                <h3 class="card-text">{{ sales_summary.total_sales }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">총 판매 수량</h6>
+                <h3 class="card-text">{{ sales_summary.total_quantity }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">총 매출</h6>
+                <h3 class="card-text">₩{{ "{:,.0f}".format(sales_summary.total_revenue) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">총 순이익</h6>
+                <h3 class="card-text">₩{{ "{:,.0f}".format(sales_summary.total_profit) }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if sales_summary.platform_stats %}
+<h3>플랫폼별 실적</h3>
+<div class="row mb-4">
+    {% for platform, stats in sales_summary.platform_stats.items() %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                플랫폼 {{ platform }}
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td>판매 건수</td>
+                        <td class="text-end">{{ stats.sales_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>판매 수량</td>
+                        <td class="text-end">{{ stats.quantity }}</td>
+                    </tr>
+                    <tr>
+                        <td>매출</td>
+                        <td class="text-end">₩{{ "{:,.0f}".format(stats.revenue) }}</td>
+                    </tr>
+                    <tr>
+                        <td>순이익</td>
+                        <td class="text-end">₩{{ "{:,.0f}".format(stats.profit) }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if sales_summary.top_products %}
+<h3>베스트셀러 TOP 5</h3>
+<div class="table-responsive mb-4">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>상품명</th>
+                <th>판매 수량</th>
+                <th>매출</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in sales_summary.top_products %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.quantity_sold }}</td>
+                <td>₩{{ "{:,.0f}".format(product.revenue) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<h3>현재 재고 현황</h3>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">총 상품 수</h6>
+                <h3 class="card-text">{{ inventory_summary.total_products }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">총 재고 수량</h6>
+                <h3 class="card-text">{{ inventory_summary.total_quantity }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">총 재고 가치</h6>
+                <h3 class="card-text">₩{{ "{:,.0f}".format(inventory_summary.total_value) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">평균 상품 가격</h6>
+                <h3 class="card-text">₩{{ "{:,.0f}".format(inventory_summary.avg_price) }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <p class="text-muted">
+        기간: {{ start_date }} ~ {{ end_date }}
+    </p>
+</div>
+{% endblock %}

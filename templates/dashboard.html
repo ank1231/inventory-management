@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}대시보드 - 재고관리 시스템{% endblock %}
+
+{% block content %}
+<h1>대시보드</h1>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">총 상품 수</h5>
+                <h2 class="card-text">{{ summary.total_products }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">총 재고 수량</h5>
+                <h2 class="card-text">{{ summary.total_quantity }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">총 재고 가치</h5>
+                <h2 class="card-text">₩{{ "{:,.0f}".format(summary.total_value) }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h5 class="card-title">평균 상품 가격</h5>
+                <h2 class="card-text">₩{{ "{:,.0f}".format(summary.avg_price) }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>재고 현황</h3>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>상품명</th>
+                        <th>가격</th>
+                        <th>재고 수량</th>
+                        <th>재고 가치</th>
+                        <th>재고 비중</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products[:10] %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>₩{{ "{:,.0f}".format(product.price) }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>₩{{ "{:,.0f}".format(product.value) }}</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ (product.quantity / summary.total_quantity * 100) if summary.total_quantity > 0 else 0 }}%">
+                                    {{ "{:.1f}".format((product.quantity / summary.total_quantity * 100) if summary.total_quantity > 0 else 0) }}%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if products|length > 10 %}
+        <p class="text-center">
+            <a href="/inventory" class="btn btn-primary">전체 재고 보기</a>
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

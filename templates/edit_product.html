@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}상품 수정 - 재고관리 시스템{% endblock %}
+
+{% block content %}
+<h1>상품 수정</h1>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="post" action="/product/edit/{{ product.id }}" class="mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="name" class="form-label">상품명</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="price" class="form-label">가격 (원)</label>
+                <input type="number" class="form-control" id="price" name="price" min="0" step="100" value="{{ product.price }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="quantity" class="form-label">재고 수량</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" min="0" value="{{ product.quantity }}" required>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="margin_a" class="form-label">A 플랫폼 마진율 (%)</label>
+                <input type="number" class="form-control" id="margin_a" name="margin_a" min="0" max="100" step="0.1" value="{{ product.margin_a }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="margin_b" class="form-label">B 플랫폼 마진율 (%)</label>
+                <input type="number" class="form-control" id="margin_b" name="margin_b" min="0" max="100" step="0.1" value="{{ product.margin_b }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="margin_c" class="form-label">C 플랫폼 마진율 (%)</label>
+                <input type="number" class="form-control" id="margin_c" name="margin_c" min="0" max="100" step="0.1" value="{{ product.margin_c }}" required>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">수정 완료</button>
+        <a href="/inventory" class="btn btn-secondary">취소</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}재고 관리 - 재고관리 시스템{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>재고 관리</h1>
+    <a href="/product/add" class="btn btn-success">새 상품 추가</a>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form method="get" action="/inventory">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="상품명 검색" value="{{ search }}">
+                <button class="btn btn-outline-secondary" type="submit">검색</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <form method="get" action="/inventory">
+            <div class="input-group">
+                <label class="input-group-text">정렬</label>
+                <select class="form-select" name="sort" onchange="this.form.submit()">
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>상품명</option>
+                    <option value="price" {% if sort_by == 'price' %}selected{% endif %}>가격</option>
+                    <option value="quantity" {% if sort_by == 'quantity' %}selected{% endif %}>재고 수량</option>
+                    <option value="value" {% if sort_by == 'value' %}selected{% endif %}>재고 가치</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>A 마진</th>
+                <th>B 마진</th>
+                <th>C 마진</th>
+                <th>재고 수량</th>
+                <th>재고 가치</th>
+                <th>작업</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr {% if product.quantity < 10 %}class="table-warning"{% endif %}>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>₩{{ "{:,.0f}".format(product.price) }}</td>
+                <td>{{ product.margin_a }}%</td>
+                <td>{{ product.margin_b }}%</td>
+                <td>{{ product.margin_c }}%</td>
+                <td>
+                    {{ product.quantity }}
+                    {% if product.quantity < 10 %}
+                    <span class="badge bg-warning">재고 부족</span>
+                    {% endif %}
+                </td>
+                <td>₩{{ "{:,.0f}".format(product.value) }}</td>
+                <td>
+                    <a href="/product/edit/{{ product.id }}" class="btn btn-sm btn-primary">수정</a>
+                    <form method="post" action="/product/delete/{{ product.id }}" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" 
+                                onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not products %}
+<div class="alert alert-info text-center">
+    등록된 상품이 없습니다.
+    <a href="/product/add" class="alert-link">첫 상품을 추가해보세요!</a>
+</div>
+{% endif %}
+{% endblock %}
