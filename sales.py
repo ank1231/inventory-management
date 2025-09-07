@@ -31,7 +31,7 @@ class SalesManager:
         margin = margin_map[platform]
         
         revenue = price * quantity
-        profit = revenue * (1 - margin / 100)
+        profit = revenue * (margin / 100)
         
         cursor.execute('''
             INSERT INTO sales (product_id, sale_date, quantity, platform, revenue, profit)
