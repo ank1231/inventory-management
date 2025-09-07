@@ -107,7 +107,17 @@
                 <td>{{ sale.sale_date }}</td>
                 <td>{{ sale.product_name }}</td>
                 <td>{{ sale.quantity }}</td>
-                <td><span class="badge bg-secondary">{{ sale.platform }}</span></td>
+                <td>
+                    {% if sale.platform == '네이버' %}
+                    <span class="badge bg-success">네이버</span>
+                    {% elif sale.platform == '쿠팡' %}
+                    <span class="badge bg-warning">쿠팡</span>
+                    {% elif sale.platform == '자사몰' %}
+                    <span class="badge bg-info">자사몰</span>
+                    {% else %}
+                    <span class="badge bg-secondary">{{ sale.platform }}</span>
+                    {% endif %}
+                </td>
                 <td>₩{{ "{:,.0f}".format(sale.revenue) }}</td>
                 <td>₩{{ "{:,.0f}".format(sale.profit) }}</td>
                 <td>{{ sale.created_at }}</td>

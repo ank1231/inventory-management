@@ -1,8 +1,9 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
-      "Bash(pip install:*)"
-    ]
+      "Bash(pip install:*)",
+      "Bash(del inventory.db)"
+    ],
+    "defaultMode": "bypassPermissions"
   }
 }

@@ -29,12 +29,12 @@ def add_product():
         try:
             name = request.form['name']
             price = float(request.form['price'])
-            margin_a = float(request.form['margin_a'])
-            margin_b = float(request.form['margin_b'])
-            margin_c = float(request.form['margin_c'])
+            margin_naver = float(request.form['margin_naver'])
+            margin_coupang = float(request.form['margin_coupang'])
+            margin_self = float(request.form['margin_self'])
             quantity = int(request.form['quantity'])
             
-            manager.add_product(name, price, margin_a, margin_b, margin_c, quantity)
+            manager.add_product(name, price, margin_naver, margin_coupang, margin_self, quantity)
             return redirect(url_for('inventory_page'))
         except Exception as e:
             return render_template('add_product.html', error=str(e))
@@ -54,12 +54,12 @@ def edit_product(product_id):
                 updates['name'] = request.form['name']
             if request.form.get('price'):
                 updates['price'] = float(request.form['price'])
-            if request.form.get('margin_a'):
-                updates['margin_a'] = float(request.form['margin_a'])
-            if request.form.get('margin_b'):
-                updates['margin_b'] = float(request.form['margin_b'])
-            if request.form.get('margin_c'):
-                updates['margin_c'] = float(request.form['margin_c'])
+            if request.form.get('margin_naver'):
+                updates['margin_naver'] = float(request.form['margin_naver'])
+            if request.form.get('margin_coupang'):
+                updates['margin_coupang'] = float(request.form['margin_coupang'])
+            if request.form.get('margin_self'):
+                updates['margin_self'] = float(request.form['margin_self'])
             if request.form.get('quantity'):
                 updates['quantity'] = int(request.form['quantity'])
             

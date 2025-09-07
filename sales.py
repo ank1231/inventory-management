@@ -8,26 +8,26 @@ class SalesManager:
         database.init_database()
     
     def record_sale(self, product_id: int, sale_date: date, quantity: int, platform: str) -> Optional[int]:
-        if platform not in ['A', 'B', 'C']:
-            raise ValueError("Platform must be A, B, or C")
+        if platform not in ['네이버', '쿠팡', '자사몰']:
+            raise ValueError("Platform must be 네이버, 쿠팡, or 자사몰")
         
         conn = database.get_connection()
         cursor = conn.cursor()
         
-        cursor.execute('SELECT price, margin_a, margin_b, margin_c, quantity FROM products WHERE id = ?', (product_id,))
+        cursor.execute('SELECT price, margin_naver, margin_coupang, margin_self, quantity FROM products WHERE id = ?', (product_id,))
         product = cursor.fetchone()
         
         if not product:
             conn.close()
             raise ValueError("Product not found")
         
-        price, margin_a, margin_b, margin_c, current_quantity = product
+        price, margin_naver, margin_coupang, margin_self, current_quantity = product
         
         if quantity > current_quantity:
             conn.close()
             raise ValueError(f"Insufficient stock. Available: {current_quantity}, Requested: {quantity}")
         
-        margin_map = {'A': margin_a, 'B': margin_b, 'C': margin_c}
+        margin_map = {'네이버': margin_naver, '쿠팡': margin_coupang, '자사몰': margin_self}
         margin = margin_map[platform]
         
         revenue = price * quantity

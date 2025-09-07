@@ -39,9 +39,9 @@
                 <th>ID</th>
                 <th>상품명</th>
                 <th>가격</th>
-                <th>A 마진</th>
-                <th>B 마진</th>
-                <th>C 마진</th>
+                <th>네이버 마진</th>
+                <th>쿠팡 마진</th>
+                <th>자사몰 마진</th>
                 <th>재고 수량</th>
                 <th>재고 가치</th>
                 <th>작업</th>
@@ -53,9 +53,9 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.name }}</td>
                 <td>₩{{ "{:,.0f}".format(product.price) }}</td>
-                <td>{{ product.margin_a }}%</td>
-                <td>{{ product.margin_b }}%</td>
-                <td>{{ product.margin_c }}%</td>
+                <td>{{ product.margin_naver }}%</td>
+                <td>{{ product.margin_coupang }}%</td>
+                <td>{{ product.margin_self }}%</td>
                 <td>
                     {{ product.quantity }}
                     {% if product.quantity < 10 %}

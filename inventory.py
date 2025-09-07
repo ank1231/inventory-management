@@ -7,11 +7,11 @@ class InventoryManager:
     def __init__(self):
         database.init_database()
     
-    def add_product(self, name: str, price: float, margin_a: float, 
-                   margin_b: float, margin_c: float, quantity: int = 0) -> int:
+    def add_product(self, name: str, price: float, margin_naver: float, 
+                   margin_coupang: float, margin_self: float, quantity: int = 0) -> int:
         if price < 0:
             raise ValueError("Price must be non-negative")
-        if not (0 <= margin_a <= 100 and 0 <= margin_b <= 100 and 0 <= margin_c <= 100):
+        if not (0 <= margin_naver <= 100 and 0 <= margin_coupang <= 100 and 0 <= margin_self <= 100):
             raise ValueError("Margins must be between 0 and 100")
         if quantity < 0:
             raise ValueError("Quantity must be non-negative")
@@ -20,9 +20,9 @@ class InventoryManager:
         cursor = conn.cursor()
         
         cursor.execute('''
-            INSERT INTO products (name, price, margin_a, margin_b, margin_c, quantity)
+            INSERT INTO products (name, price, margin_naver, margin_coupang, margin_self, quantity)
             VALUES (?, ?, ?, ?, ?, ?)
-        ''', (name, price, margin_a, margin_b, margin_c, quantity))
+        ''', (name, price, margin_naver, margin_coupang, margin_self, quantity))
         
         product_id = cursor.lastrowid
         conn.commit()
@@ -35,7 +35,7 @@ class InventoryManager:
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT id, name, price, margin_a, margin_b, margin_c, quantity, 
+            SELECT id, name, price, margin_naver, margin_coupang, margin_self, quantity, 
                    created_at, updated_at
             FROM products
             WHERE id = ?
@@ -49,9 +49,9 @@ class InventoryManager:
                 'id': row[0],
                 'name': row[1],
                 'price': row[2],
-                'margin_a': row[3],
-                'margin_b': row[4],
-                'margin_c': row[5],
+                'margin_naver': row[3],
+                'margin_coupang': row[4],
+                'margin_self': row[5],
                 'quantity': row[6],
                 'created_at': row[7],
                 'updated_at': row[8]
@@ -72,7 +72,7 @@ class InventoryManager:
         sort_column = valid_sort.get(sort_by, 'name')
         
         query = '''
-            SELECT id, name, price, margin_a, margin_b, margin_c, quantity,
+            SELECT id, name, price, margin_naver, margin_coupang, margin_self, quantity,
                    price * quantity as value, created_at, updated_at
             FROM products
         '''
@@ -94,9 +94,9 @@ class InventoryManager:
                 'id': row[0],
                 'name': row[1],
                 'price': row[2],
-                'margin_a': row[3],
-                'margin_b': row[4],
-                'margin_c': row[5],
+                'margin_naver': row[3],
+                'margin_coupang': row[4],
+                'margin_self': row[5],
                 'quantity': row[6],
                 'value': row[7],
                 'created_at': row[8],
@@ -106,12 +106,12 @@ class InventoryManager:
         return products
     
     def update_product(self, product_id: int, **kwargs) -> bool:
-        allowed_fields = ['name', 'price', 'margin_a', 'margin_b', 'margin_c', 'quantity']
+        allowed_fields = ['name', 'price', 'margin_naver', 'margin_coupang', 'margin_self', 'quantity']
         
         if 'price' in kwargs and kwargs['price'] < 0:
             raise ValueError("Price must be non-negative")
         
-        for margin in ['margin_a', 'margin_b', 'margin_c']:
+        for margin in ['margin_naver', 'margin_coupang', 'margin_self']:
             if margin in kwargs and not (0 <= kwargs[margin] <= 100):
                 raise ValueError(f"{margin} must be between 0 and 100")
         

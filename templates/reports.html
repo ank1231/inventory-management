@@ -78,7 +78,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-secondary text-white">
-                플랫폼 {{ platform }}
+                {% if platform == '네이버' %}네이버{% elif platform == '쿠팡' %}쿠팡{% elif platform == '자사몰' %}자사몰{% else %}{{ platform }}{% endif %}
             </div>
             <div class="card-body">
                 <table class="table table-sm">
