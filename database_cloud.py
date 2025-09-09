@@ -139,8 +139,9 @@ def init_database():
 def get_connection():
     """데이터베이스 연결 반환"""
     if USE_POSTGRESQL:
-        # DATABASE_URL을 직접 사용 (psycopg2가 자동으로 파싱)
-        return psycopg2.connect(DATABASE_URL)
+        # URL에서 %를 %25로 인코딩
+        encoded_url = DATABASE_URL.replace('%', '%25')
+        return psycopg2.connect(encoded_url)
     else:
         return sqlite3.connect('inventory.db')
 
