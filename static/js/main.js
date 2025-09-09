@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const alerts = document.querySelectorAll('.alert');
+    // 임시 알림만 자동으로 사라지게 함 (dismissible 클래스가 있는 것만)
+    const alerts = document.querySelectorAll('.alert.alert-dismissible');
     alerts.forEach(alert => {
         setTimeout(() => {
             alert.style.transition = 'opacity 0.5s';
