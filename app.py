@@ -55,31 +55,24 @@ def index():
     products = manager.get_all_products()
     summary = manager.get_inventory_summary()
     
-    # 플랫폼별 평균 마진율 계산
+    # 플랫폼별 평균 마진율 계산 (0 제외)
     conn = database.get_connection()
     cursor = conn.cursor()
     
+    # 각 플랫폼별로 0이 아닌 마진율만 계산
     if hasattr(conn, 'server_version'):  # PostgreSQL
         cursor.execute('''
             SELECT 
-                AVG(margin_naver) as avg_margin_naver,
-                AVG(margin_coupang) as avg_margin_coupang,
-                AVG(margin_self) as avg_margin_self
-            FROM products
-            WHERE margin_naver IS NOT NULL 
-            AND margin_coupang IS NOT NULL 
-            AND margin_self IS NOT NULL
+                (SELECT AVG(margin_naver) FROM products WHERE margin_naver > 0) as avg_margin_naver,
+                (SELECT AVG(margin_coupang) FROM products WHERE margin_coupang > 0) as avg_margin_coupang,
+                (SELECT AVG(margin_self) FROM products WHERE margin_self > 0) as avg_margin_self
         ''')
     else:  # SQLite
         cursor.execute('''
             SELECT 
-                AVG(margin_naver) as avg_margin_naver,
-                AVG(margin_coupang) as avg_margin_coupang,
-                AVG(margin_self) as avg_margin_self
-            FROM products
-            WHERE margin_naver IS NOT NULL 
-            AND margin_coupang IS NOT NULL 
-            AND margin_self IS NOT NULL
+                (SELECT AVG(margin_naver) FROM products WHERE margin_naver > 0) as avg_margin_naver,
+                (SELECT AVG(margin_coupang) FROM products WHERE margin_coupang > 0) as avg_margin_coupang,
+                (SELECT AVG(margin_self) FROM products WHERE margin_self > 0) as avg_margin_self
         ''')
     
     avg_margins = cursor.fetchone()
