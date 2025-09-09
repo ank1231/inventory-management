@@ -142,7 +142,13 @@ def get_connection():
         try:
             # URL에서 %를 %25로 인코딩
             encoded_url = DATABASE_URL.replace('%', '%25')
-            print(f"Attempting PostgreSQL connection to: {encoded_url[:50]}...")  # 디버깅용
+            # Supabase pooler URL로 변경 (IPv4 강제)
+            if 'db.csemzzfbnluuhazrrurf.supabase.co' in encoded_url:
+                encoded_url = encoded_url.replace(
+                    'db.csemzzfbnluuhazrrurf.supabase.co:5432',
+                    'aws-0-ap-southeast-1.pooler.supabase.com:6543'
+                )
+            print(f"Attempting PostgreSQL connection to: {encoded_url[:50]}...")
             conn = psycopg2.connect(encoded_url)
             print("PostgreSQL connection successful!")
             return conn
