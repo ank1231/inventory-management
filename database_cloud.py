@@ -142,10 +142,14 @@ def get_connection():
         try:
             # URL에서 %를 %25로 인코딩
             encoded_url = DATABASE_URL.replace('%', '%25')
-            return psycopg2.connect(encoded_url)
-        except:
+            print(f"Attempting PostgreSQL connection to: {encoded_url[:50]}...")  # 디버깅용
+            conn = psycopg2.connect(encoded_url)
+            print("PostgreSQL connection successful!")
+            return conn
+        except Exception as e:
             # PostgreSQL 연결 실패시 SQLite 폴백
-            print("Warning: PostgreSQL connection failed, using SQLite fallback")
+            print(f"PostgreSQL connection failed: {str(e)}")
+            print("Using SQLite fallback")
             return sqlite3.connect('inventory.db')
     else:
         return sqlite3.connect('inventory.db')
