@@ -1,0 +1,71 @@
+# 대시보드에 플랫폼별 평균 마진율 추가 계획
+
+## 1. 데이터베이스 쿼리 (app.py)
+```python
+# index 라우트에 추가할 쿼리
+cursor.execute('''
+    SELECT 
+        AVG(margin_naver) as avg_margin_naver,
+        AVG(margin_coupang) as avg_margin_coupang,
+        AVG(margin_self) as avg_margin_self
+    FROM products
+    WHERE margin_naver IS NOT NULL 
+    AND margin_coupang IS NOT NULL 
+    AND margin_self IS NOT NULL
+''')
+avg_margins = cursor.fetchone()
+
+# 결과를 템플릿에 전달
+avg_margins_dict = {
+    'naver': round(avg_margins[0], 1) if avg_margins[0] else 0,
+    'coupang': round(avg_margins[1], 1) if avg_margins[1] else 0,
+    'self': round(avg_margins[2], 1) if avg_margins[2] else 0
+}
+```
+
+## 2. HTML 템플릿 (templates/index.html)
+```html
+<!-- 기존 통계 카드들 아래에 추가 -->
+<div class="col-md-12 mb-4">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5><i class="fas fa-percentage"></i> 플랫폼별 평균 마진율</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="alert alert-success">
+                        <h6>네이버 스토어</h6>
+                        <h3>{{ avg_margins.naver }}%</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="alert alert-warning">
+                        <h6>쿠팡</h6>
+                        <h3>{{ avg_margins.coupang }}%</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="alert alert-primary">
+                        <h6>자사몰</h6>
+                        <h3>{{ avg_margins.self }}%</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+## 3. 추가 기능 아이디어
+- 마진율이 가장 높은 플랫폼 강조 표시
+- 전월 대비 마진율 변화 추이
+- 제품별 최적 판매 플랫폼 추천
+- 마진율 기준 경고 (예: 10% 미만 빨간색)
+
+## 4. 구현 순서
+1. app.py의 index() 함수에 평균 마진율 쿼리 추가
+2. 쿼리 결과를 템플릿에 전달
+3. index.html에 평균 마진율 카드 섹션 추가
+4. CSS로 시각적 개선 (색상, 아이콘 등)
+5. 테스트 및 배포

@@ -54,7 +54,45 @@ def logout():
 def index():
     products = manager.get_all_products()
     summary = manager.get_inventory_summary()
-    return render_template('dashboard.html', products=products, summary=summary)
+    
+    # 플랫폼별 평균 마진율 계산
+    conn = database.get_connection()
+    cursor = conn.cursor()
+    
+    if hasattr(conn, 'server_version'):  # PostgreSQL
+        cursor.execute('''
+            SELECT 
+                AVG(margin_naver) as avg_margin_naver,
+                AVG(margin_coupang) as avg_margin_coupang,
+                AVG(margin_self) as avg_margin_self
+            FROM products
+            WHERE margin_naver IS NOT NULL 
+            AND margin_coupang IS NOT NULL 
+            AND margin_self IS NOT NULL
+        ''')
+    else:  # SQLite
+        cursor.execute('''
+            SELECT 
+                AVG(margin_naver) as avg_margin_naver,
+                AVG(margin_coupang) as avg_margin_coupang,
+                AVG(margin_self) as avg_margin_self
+            FROM products
+            WHERE margin_naver IS NOT NULL 
+            AND margin_coupang IS NOT NULL 
+            AND margin_self IS NOT NULL
+        ''')
+    
+    avg_margins = cursor.fetchone()
+    conn.close()
+    
+    # 결과를 템플릿에 전달할 형태로 변환
+    avg_margins_dict = {
+        'naver': round(avg_margins[0], 1) if avg_margins and avg_margins[0] else 0,
+        'coupang': round(avg_margins[1], 1) if avg_margins and avg_margins[1] else 0,
+        'self': round(avg_margins[2], 1) if avg_margins and avg_margins[2] else 0
+    }
+    
+    return render_template('dashboard.html', products=products, summary=summary, avg_margins=avg_margins_dict)
 
 @app.route('/inventory')
 @login_required
