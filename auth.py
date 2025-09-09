@@ -22,14 +22,14 @@ class User(UserMixin):
         password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         
         try:
-            if database.USE_POSTGRESQL:
+            if hasattr(conn, 'server_version'):  # PostgreSQL
                 cursor.execute('''
                     INSERT INTO users (username, email, password_hash, is_admin)
                     VALUES (%s, %s, %s, %s)
                     RETURNING id
                 ''', (username, email, password_hash, is_admin))
                 user_id = cursor.fetchone()[0]
-            else:
+            else:  # SQLite
                 cursor.execute('''
                     INSERT INTO users (username, email, password_hash, is_admin)
                     VALUES (?, ?, ?, ?)
@@ -49,9 +49,9 @@ class User(UserMixin):
         conn = database.get_connection()
         cursor = conn.cursor()
         
-        if database.USE_POSTGRESQL:
+        if hasattr(conn, 'server_version'):  # PostgreSQL
             cursor.execute('SELECT id, username, email, is_admin FROM users WHERE username = %s', (username,))
-        else:
+        else:  # SQLite
             cursor.execute('SELECT id, username, email, is_admin FROM users WHERE username = ?', (username,))
         
         user_data = cursor.fetchone()
@@ -67,9 +67,9 @@ class User(UserMixin):
         conn = database.get_connection()
         cursor = conn.cursor()
         
-        if database.USE_POSTGRESQL:
+        if hasattr(conn, 'server_version'):  # PostgreSQL
             cursor.execute('SELECT id, username, email, is_admin FROM users WHERE id = %s', (user_id,))
-        else:
+        else:  # SQLite
             cursor.execute('SELECT id, username, email, is_admin FROM users WHERE id = ?', (user_id,))
         
         user_data = cursor.fetchone()
@@ -85,9 +85,10 @@ class User(UserMixin):
         conn = database.get_connection()
         cursor = conn.cursor()
         
-        if database.USE_POSTGRESQL:
+        # 연결 타입 확인 (psycopg2 vs sqlite3)
+        if hasattr(conn, 'server_version'):  # PostgreSQL
             cursor.execute('SELECT password_hash FROM users WHERE username = %s', (username,))
-        else:
+        else:  # SQLite
             cursor.execute('SELECT password_hash FROM users WHERE username = ?', (username,))
         
         result = cursor.fetchone()
