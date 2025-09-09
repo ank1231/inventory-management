@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}재고 관리 - 재고관리 시스템{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>재고 관리</h1>
+    <div>
+        <button id="saveChanges" class="btn btn-warning" style="display: none;">
+            <i class="bi bi-save"></i> 수정사항 저장
+        </button>
+        <a href="/product/add" class="btn btn-success">새 상품 추가</a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form method="get" action="/inventory">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="상품명 검색" value="{{ search }}">
+                <button class="btn btn-outline-secondary" type="submit">검색</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <form method="get" action="/inventory">
+            <div class="input-group">
+                <label class="input-group-text">정렬</label>
+                <select class="form-select" name="sort" onchange="this.form.submit()">
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>상품명</option>
+                    <option value="price" {% if sort_by == 'price' %}selected{% endif %}>가격</option>
+                    <option value="quantity" {% if sort_by == 'quantity' %}selected{% endif %}>재고 수량</option>
+                    <option value="value" {% if sort_by == 'value' %}selected{% endif %}>재고 가치</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="alertMessage" class="alert" style="display: none;"></div>
+
+<div class="table-responsive">
+    <table class="table table-hover" id="inventoryTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>상품명</th>
+                <th>옵션</th>
+                <th>가격</th>
+                <th>네이버 마진</th>
+                <th>쿠팡 마진</th>
+                <th>자사몰 마진</th>
+                <th>재고 수량</th>
+                <th>재고 가치</th>
+                <th>작업</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr data-product-id="{{ product.id }}" {% if product.quantity < 10 %}class="table-warning"{% endif %}>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.options if product.options else '-' }}</td>
+                <td>
+                    <input type="number" class="form-control form-control-sm editable" 
+                           data-field="price" value="{{ product.price }}" 
+                           min="0" step="1" style="width: 100px;">
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm editable" 
+                           data-field="margin_naver" value="{{ product.margin_naver }}" 
+                           min="0" max="100" step="0.1" style="width: 80px;">
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm editable" 
+                           data-field="margin_coupang" value="{{ product.margin_coupang }}" 
+                           min="0" max="100" step="0.1" style="width: 80px;">
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm editable" 
+                           data-field="margin_self" value="{{ product.margin_self }}" 
+                           min="0" max="100" step="0.1" style="width: 80px;">
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm editable" 
+                           data-field="quantity" value="{{ product.quantity }}" 
+                           min="0" style="width: 80px;">
+                    {% if product.quantity < 10 %}
+                    <span class="badge bg-warning">재고 부족</span>
+                    {% endif %}
+                </td>
+                <td class="product-value">₩{{ "{:,.0f}".format(product.value) }}</td>
+                <td>
+                    <a href="/product/copy/{{ product.id }}" class="btn btn-sm btn-success">복사</a>
+                    <a href="/product/edit/{{ product.id }}" class="btn btn-sm btn-primary">상세수정</a>
+                    <form method="post" action="/product/delete/{{ product.id }}" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" 
+                                onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not products %}
+<div class="alert alert-info text-center">
+    등록된 상품이 없습니다.
+    <a href="/product/add" class="alert-link">첫 상품을 추가해보세요!</a>
+</div>
+{% endif %}
+
+<style>
+    .editable {
+        border: 1px solid #dee2e6;
+        background-color: transparent;
+    }
+    .editable:focus {
+        background-color: #fff;
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .editable.changed {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.025);
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const changedProducts = new Map();
+    const saveButton = document.getElementById('saveChanges');
+    const alertDiv = document.getElementById('alertMessage');
+    
+    // 모든 편집 가능한 입력 필드에 이벤트 리스너 추가
+    document.querySelectorAll('.editable').forEach(input => {
+        const originalValue = input.value;
+        input.dataset.originalValue = originalValue;
+        
+        input.addEventListener('input', function() {
+            const row = this.closest('tr');
+            const productId = row.dataset.productId;
+            const field = this.dataset.field;
+            const newValue = this.value;
+            
+            // 값이 변경되었는지 확인
+            if (newValue !== this.dataset.originalValue) {
+                this.classList.add('changed');
+                
+                // 변경사항 추적
+                if (!changedProducts.has(productId)) {
+                    changedProducts.set(productId, {});
+                }
+                changedProducts.get(productId)[field] = parseFloat(newValue);
+                
+                // 재고 가치 실시간 업데이트 (가격 또는 수량 변경 시)
+                if (field === 'price' || field === 'quantity') {
+                    updateProductValue(row);
+                }
+                
+                // 저장 버튼 표시
+                saveButton.style.display = 'inline-block';
+            } else {
+                this.classList.remove('changed');
+                
+                // 해당 필드 변경사항 제거
+                if (changedProducts.has(productId)) {
+                    delete changedProducts.get(productId)[field];
+                    if (Object.keys(changedProducts.get(productId)).length === 0) {
+                        changedProducts.delete(productId);
+                    }
+                }
+                
+                // 변경사항이 없으면 저장 버튼 숨김
+                if (changedProducts.size === 0) {
+                    saveButton.style.display = 'none';
+                }
+            }
+        });
+    });
+    
+    // 재고 가치 업데이트 함수
+    function updateProductValue(row) {
+        const priceInput = row.querySelector('[data-field="price"]');
+        const quantityInput = row.querySelector('[data-field="quantity"]');
+        const valueCell = row.querySelector('.product-value');
+        
+        const price = parseFloat(priceInput.value) || 0;
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const value = price * quantity;
+        
+        valueCell.textContent = '₩' + value.toLocaleString('ko-KR');
+    }
+    
+    // 저장 버튼 클릭 이벤트
+    saveButton.addEventListener('click', async function() {
+        if (changedProducts.size === 0) {
+            showAlert('변경사항이 없습니다.', 'warning');
+            return;
+        }
+        
+        // 변경사항을 배열로 변환
+        const updates = [];
+        changedProducts.forEach((changes, productId) => {
+            updates.push({
+                id: parseInt(productId),
+                ...changes
+            });
+        });
+        
+        try {
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 저장 중...';
+            
+            const response = await fetch('/api/products/bulk-update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updates)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // 성공 시 원본 값 업데이트 및 스타일 초기화
+                document.querySelectorAll('.editable.changed').forEach(input => {
+                    input.dataset.originalValue = input.value;
+                    input.classList.remove('changed');
+                });
+                
+                changedProducts.clear();
+                saveButton.style.display = 'none';
+                showAlert(`${result.result.success_count}개 상품이 성공적으로 업데이트되었습니다.`, 'success');
+                
+                // 3초 후 페이지 새로고침
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showAlert('저장 중 오류가 발생했습니다: ' + result.error, 'danger');
+            }
+        } catch (error) {
+            showAlert('서버 연결 오류: ' + error.message, 'danger');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.innerHTML = '<i class="bi bi-save"></i> 수정사항 저장';
+        }
+    });
+    
+    // 알림 메시지 표시 함수
+    function showAlert(message, type) {
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.textContent = message;
+        alertDiv.style.display = 'block';
+        
+        setTimeout(() => {
+            alertDiv.style.display = 'none';
+        }, 5000);
+    }
+    
+    // 페이지 떠날 때 저장하지 않은 변경사항 경고
+    window.addEventListener('beforeunload', function(e) {
+        if (changedProducts.size > 0) {
+            e.preventDefault();
+            e.returnValue = '저장하지 않은 변경사항이 있습니다. 정말 페이지를 떠나시겠습니까?';
+        }
+    });
+});
+</script>
+{% endblock %}

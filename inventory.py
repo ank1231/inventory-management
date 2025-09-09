@@ -158,6 +158,54 @@ class InventoryManager:
         
         return success
     
+    def bulk_update_products(self, updates: List[Dict]) -> Dict:
+        """
+        여러 상품을 한 번에 업데이트
+        updates: [{'id': 1, 'price': 10000, 'quantity': 50, ...}, ...]
+        """
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        
+        success_count = 0
+        errors = []
+        
+        for update in updates:
+            try:
+                product_id = update.get('id')
+                if not product_id:
+                    continue
+                
+                # 업데이트할 필드만 추출
+                fields_to_update = []
+                values = []
+                
+                for field in ['price', 'margin_naver', 'margin_coupang', 'margin_self', 'quantity']:
+                    if field in update:
+                        fields_to_update.append(f"{field} = ?")
+                        values.append(update[field])
+                
+                if not fields_to_update:
+                    continue
+                
+                # 업데이트 실행
+                fields_to_update.append("updated_at = CURRENT_TIMESTAMP")
+                values.append(product_id)
+                
+                query = f"UPDATE products SET {', '.join(fields_to_update)} WHERE id = ?"
+                cursor.execute(query, values)
+                success_count += 1
+                
+            except Exception as e:
+                errors.append({'id': product_id, 'error': str(e)})
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            'success_count': success_count,
+            'errors': errors
+        }
+    
     def get_inventory_summary(self) -> Dict:
         conn = database.get_connection()
         cursor = conn.cursor()

@@ -29,6 +29,16 @@
                         <a class="nav-link" href="/reports">리포트</a>
                     </li>
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="navbar-text me-3">{{ current_user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">로그아웃</a>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
