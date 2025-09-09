@@ -139,9 +139,14 @@ def init_database():
 def get_connection():
     """데이터베이스 연결 반환"""
     if USE_POSTGRESQL:
-        # URL에서 %를 %25로 인코딩
-        encoded_url = DATABASE_URL.replace('%', '%25')
-        return psycopg2.connect(encoded_url)
+        try:
+            # URL에서 %를 %25로 인코딩
+            encoded_url = DATABASE_URL.replace('%', '%25')
+            return psycopg2.connect(encoded_url)
+        except:
+            # PostgreSQL 연결 실패시 SQLite 폴백
+            print("Warning: PostgreSQL connection failed, using SQLite fallback")
+            return sqlite3.connect('inventory.db')
     else:
         return sqlite3.connect('inventory.db')
 
