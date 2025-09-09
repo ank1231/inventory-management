@@ -1,50 +1,176 @@
-2025-09-09T14:15:02.300612274Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
-2025-09-09T14:15:07.129818449Z ==> Running 'gunicorn app:app'
-2025-09-09T14:15:09.544514869Z Traceback (most recent call last):
-2025-09-09T14:15:09.606929614Z   File "/opt/render/project/src/.venv/bin/gunicorn", line 8, in <module>
-2025-09-09T14:15:09.606944915Z     sys.exit(run())
-2025-09-09T14:15:09.606948125Z              ~~~^^
-2025-09-09T14:15:09.606953565Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 67, in run
-2025-09-09T14:15:09.606959046Z     WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]").run()
-2025-09-09T14:15:09.606961826Z     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
-2025-09-09T14:15:09.606964226Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/base.py", line 236, in run
-2025-09-09T14:15:09.606966676Z     super().run()
-2025-09-09T14:15:09.606968966Z     ~~~~~~~~~~~^^
-2025-09-09T14:15:09.606971346Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/base.py", line 72, in run
-2025-09-09T14:15:09.606973676Z     Arbiter(self).run()
-2025-09-09T14:15:09.606976276Z     ~~~~~~~^^^^^^
-2025-09-09T14:15:09.606978697Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/arbiter.py", line 58, in __init__
-2025-09-09T14:15:09.606980987Z     self.setup(app)
-2025-09-09T14:15:09.606983207Z     ~~~~~~~~~~^^^^^
-2025-09-09T14:15:09.606985537Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/arbiter.py", line 118, in setup
-2025-09-09T14:15:09.606988027Z     self.app.wsgi()
-2025-09-09T14:15:09.606990607Z     ~~~~~~~~~~~~~^^
-2025-09-09T14:15:09.606993437Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/base.py", line 67, in wsgi
-2025-09-09T14:15:09.606997008Z     self.callable = self.load()
-2025-09-09T14:15:09.606999398Z                     ~~~~~~~~~^^
-2025-09-09T14:15:09.607001998Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
-2025-09-09T14:15:09.607004538Z     return self.load_wsgiapp()
-2025-09-09T14:15:09.607007068Z            ~~~~~~~~~~~~~~~~~^^
-2025-09-09T14:15:09.607010178Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
-2025-09-09T14:15:09.607013159Z     return util.import_app(self.app_uri)
-2025-09-09T14:15:09.607015369Z            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
-2025-09-09T14:15:09.607017619Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/util.py", line 371, in import_app
-2025-09-09T14:15:09.607019729Z     mod = importlib.import_module(module)
-2025-09-09T14:15:09.607022309Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
-2025-09-09T14:15:09.607024599Z     return _bootstrap._gcd_import(name[level:], package, level)
-2025-09-09T14:15:09.607027079Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2025-09-09T14:15:09.60702953Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
-2025-09-09T14:15:09.60703199Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
-2025-09-09T14:15:09.60703439Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
-2025-09-09T14:15:09.60703665Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
-2025-09-09T14:15:09.607050421Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
-2025-09-09T14:15:09.607053321Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-2025-09-09T14:15:09.607055661Z   File "/opt/render/project/src/app.py", line 6, in <module>
-2025-09-09T14:15:09.607058001Z     import database_cloud as database
-2025-09-09T14:15:09.607071242Z   File "/opt/render/project/src/database_cloud.py", line 14, in <module>
-2025-09-09T14:15:09.607073862Z     import psycopg2
-2025-09-09T14:15:09.607076412Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/psycopg2/__init__.py", line 51, in <module>
-2025-09-09T14:15:09.607079033Z     from psycopg2._psycopg import (                     # noqa
-2025-09-09T14:15:09.607081553Z     ...<10 lines>...
-2025-09-09T14:15:09.607083983Z     )
-2025-09-09T14:15:09.607088353Z ImportError: /opt/render/project/src/.venv/lib/python3.13/site-packages/psycopg2/_psycopg.cpython-313-x86_64-linux-gnu.so: undefined symbol: _PyInterpreterState_Get
+2025-09-09T15:16:59.06284519Z   Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+2025-09-09T15:16:59.179403186Z Collecting bcrypt>=3.1.1 (from Flask-Bcrypt==1.0.1->-r requirements.txt (line 7))
+2025-09-09T15:16:59.181915553Z   Using cached bcrypt-4.3.0-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (10 kB)
+2025-09-09T15:16:59.234823861Z Using cached Flask-2.3.2-py3-none-any.whl (96 kB)
+2025-09-09T15:16:59.270072542Z Using cached Werkzeug-2.3.6-py3-none-any.whl (242 kB)
+2025-09-09T15:16:59.395625993Z Using cached gunicorn-21.2.0-py3-none-any.whl (80 kB)
+2025-09-09T15:16:59.408893483Z Using cached python_dotenv-1.0.0-py3-none-any.whl (19 kB)
+2025-09-09T15:16:59.421510303Z Using cached Flask_Login-0.6.3-py3-none-any.whl (17 kB)
+2025-09-09T15:16:59.439645656Z Using cached Flask_Bcrypt-1.0.1-py3-none-any.whl (6.0 kB)
+2025-09-09T15:16:59.459481595Z Using cached bcrypt-4.3.0-cp39-abi3-manylinux_2_34_x86_64.whl (284 kB)
+2025-09-09T15:16:59.504167138Z Using cached blinker-1.9.0-py3-none-any.whl (8.5 kB)
+2025-09-09T15:16:59.561010964Z Using cached click-8.2.1-py3-none-any.whl (102 kB)
+2025-09-09T15:16:59.644798007Z Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+2025-09-09T15:16:59.663960355Z Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+2025-09-09T15:16:59.695837936Z Using cached MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+2025-09-09T15:16:59.706570297Z Using cached packaging-25.0-py3-none-any.whl (66 kB)
+2025-09-09T15:16:59.768303467Z Installing collected packages: python-dotenv, psycopg2, packaging, MarkupSafe, itsdangerous, click, blinker, bcrypt, Werkzeug, Jinja2, gunicorn, Flask, Flask-Login, Flask-Bcrypt
+2025-09-09T15:17:02.673791243Z Successfully installed Flask-2.3.2 Flask-Bcrypt-1.0.1 Flask-Login-0.6.3 Jinja2-3.1.6 MarkupSafe-3.0.2 Werkzeug-2.3.6 bcrypt-4.3.0 blinker-1.9.0 click-8.2.1 gunicorn-21.2.0 itsdangerous-2.2.0 packaging-25.0 psycopg2-2.9.9 python-dotenv-1.0.0
+2025-09-09T15:17:02.741800327Z 
+2025-09-09T15:17:02.741827748Z [notice] A new release of pip is available: 24.0 -> 25.2
+2025-09-09T15:17:02.741832328Z [notice] To update, run: pip install --upgrade pip
+2025-09-09T15:17:34.729926808Z ==> Uploading build...
+2025-09-09T15:18:58.993354323Z ==> Uploaded in 14.0s. Compression took 70.2s
+2025-09-09T15:18:59.083000245Z ==> Build successful 🎉
+2025-09-09T15:19:21.510641533Z ==> Deploying...
+2025-09-09T15:19:49.047576771Z ==> Running 'gunicorn app:app'
+2025-09-09T15:19:52.142505693Z [2025-09-09 15:19:52 +0000] [55] [INFO] Starting gunicorn 21.2.0
+2025-09-09T15:19:52.142977874Z [2025-09-09 15:19:52 +0000] [55] [INFO] Listening at: http://0.0.0.0:10000 (55)
+2025-09-09T15:19:52.142992915Z [2025-09-09 15:19:52 +0000] [55] [INFO] Using worker: sync
+2025-09-09T15:19:52.147107671Z [2025-09-09 15:19:52 +0000] [57] [INFO] Booting worker with pid: 57
+2025-09-09T15:19:52.505911675Z Database 'inventory.db' initialized successfully.
+2025-09-09T15:19:52.505932895Z Database 'inventory.db' initialized successfully.
+2025-09-09T15:19:52.505936765Z 127.0.0.1 - - [09/Sep/2025:15:19:52 +0000] "HEAD / HTTP/1.1" 302 0 "-" "Go-http-client/1.1"
+2025-09-09T15:20:02.305766796Z ==> Your service is live 🎉
+2025-09-09T15:20:02.337588354Z ==> 
+2025-09-09T15:20:02.371485861Z ==> ///////////////////////////////////////////////////////////
+2025-09-09T15:20:02.402707769Z ==> 
+2025-09-09T15:20:02.444840715Z ==> Available at your primary URL https://inventory-management-j374.onrender.com
+2025-09-09T15:20:02.475783993Z ==> 
+2025-09-09T15:20:02.50807187Z ==> ///////////////////////////////////////////////////////////
+2025-09-09T15:20:08.666886031Z 127.0.0.1 - - [09/Sep/2025:15:20:08 +0000] "GET / HTTP/1.1" 302 217 "-" "Go-http-client/2.0"
+2025-09-09T15:20:08.718608768Z 127.0.0.1 - - [09/Sep/2025:15:20:08 +0000] "GET /login?next=%2F HTTP/1.1" 200 3232 "https://inventory-management-j374.onrender.com" "Go-http-client/2.0"
+2025-09-09T15:20:10.105064606Z 127.0.0.1 - - [09/Sep/2025:15:20:10 +0000] "GET / HTTP/1.1" 302 217 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:10.324405028Z 127.0.0.1 - - [09/Sep/2025:15:20:10 +0000] "GET /login?next=%2F HTTP/1.1" 200 3414 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:13.737571211Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:13.737594901Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:13.737599851Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:13.737603151Z 
+2025-09-09T15:20:13.737607431Z Using SQLite fallback
+2025-09-09T15:20:13.737614322Z 127.0.0.1 - - [09/Sep/2025:15:20:13 +0000] "POST /login?next=%2F HTTP/1.1" 200 3442 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:24.628392918Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:24.628415829Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:24.628422179Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:24.628428339Z 
+2025-09-09T15:20:24.628434409Z Using SQLite fallback
+2025-09-09T15:20:24.628440099Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:24.62844574Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:24.62845106Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:24.62845623Z 
+2025-09-09T15:20:24.62846185Z Using SQLite fallback
+2025-09-09T15:20:24.62847006Z 127.0.0.1 - - [09/Sep/2025:15:20:24 +0000] "POST /login?next=%2F HTTP/1.1" 302 189 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:28.127075825Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:28.127112356Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:28.127116676Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:28.127119136Z 
+2025-09-09T15:20:28.127122736Z Using SQLite fallback
+2025-09-09T15:20:28.127125376Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:28.127128036Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:28.127130776Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:28.127133196Z 
+2025-09-09T15:20:28.127135896Z Using SQLite fallback
+2025-09-09T15:20:28.127139296Z 127.0.0.1 - - [09/Sep/2025:15:20:28 +0000] "POST /login?next=%2F HTTP/1.1" 302 189 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:31.636587907Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:31.636610157Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:31.636614007Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:31.636616277Z 
+2025-09-09T15:20:31.636619107Z Using SQLite fallback
+2025-09-09T15:20:31.636621637Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:31.636623967Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:31.636626217Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:31.636628148Z 
+2025-09-09T15:20:31.636630208Z Using SQLite fallback
+2025-09-09T15:20:31.636635428Z 127.0.0.1 - - [09/Sep/2025:15:20:31 +0000] "POST /login?next=%2F HTTP/1.1" 302 189 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:35.197813115Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:35.197842576Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:35.197846686Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:35.197849406Z 
+2025-09-09T15:20:35.197852426Z Using SQLite fallback
+2025-09-09T15:20:35.197855516Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:35.197858286Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:35.197860826Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:35.197878326Z 
+2025-09-09T15:20:35.197881057Z Using SQLite fallback
+2025-09-09T15:20:35.197884067Z 127.0.0.1 - - [09/Sep/2025:15:20:35 +0000] "POST /login?next=%2F HTTP/1.1" 302 189 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:36.424207717Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:20:36.424235057Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:36.424239267Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:20:36.424242318Z 
+2025-09-09T15:20:36.424245738Z Using SQLite fallback
+2025-09-09T15:20:36.424249088Z 127.0.0.1 - - [09/Sep/2025:15:20:36 +0000] "GET / HTTP/1.1" 200 10171 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:36.642297699Z 127.0.0.1 - - [09/Sep/2025:15:20:36 +0000] "GET /static/css/style.css HTTP/1.1" 200 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:20:36.65085582Z 127.0.0.1 - - [09/Sep/2025:15:20:36 +0000] "GET /static/js/main.js HTTP/1.1" 200 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:17.371652287Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:17.371678748Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (54.255.219.82), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:17.371683028Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (54.255.219.82), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:17.371686148Z 
+2025-09-09T15:21:17.371689518Z Using SQLite fallback
+2025-09-09T15:21:17.371694108Z 127.0.0.1 - - [09/Sep/2025:15:21:17 +0000] "GET / HTTP/1.1" 200 10171 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:17.585327486Z 127.0.0.1 - - [09/Sep/2025:15:21:17 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:17.914633936Z 127.0.0.1 - - [09/Sep/2025:15:21:17 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:32.861337642Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:32.861361122Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:32.861366482Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:32.861370162Z 
+2025-09-09T15:21:32.861386353Z Using SQLite fallback
+2025-09-09T15:21:32.861391563Z 127.0.0.1 - - [09/Sep/2025:15:21:32 +0000] "GET / HTTP/1.1" 200 10171 "https://inventory-management-j374.onrender.com/login?next=%2F" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:33.059988977Z 127.0.0.1 - - [09/Sep/2025:15:21:33 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:33.171375068Z 127.0.0.1 - - [09/Sep/2025:15:21:33 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:34.652570288Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:34.652589659Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:34.652593239Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:34.652595688Z 
+2025-09-09T15:21:34.652598869Z Using SQLite fallback
+2025-09-09T15:21:34.652602049Z 127.0.0.1 - - [09/Sep/2025:15:21:34 +0000] "GET / HTTP/1.1" 200 10171 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:35.667558266Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:35.667576986Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:35.667580656Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:35.667583366Z 
+2025-09-09T15:21:35.667586366Z Using SQLite fallback
+2025-09-09T15:21:35.667602287Z 127.0.0.1 - - [09/Sep/2025:15:21:35 +0000] "GET /inventory HTTP/1.1" 200 42003 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:35.88999337Z 127.0.0.1 - - [09/Sep/2025:15:21:35 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/inventory" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:35.945323703Z 127.0.0.1 - - [09/Sep/2025:15:21:35 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/inventory" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:38.093280555Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:38.093306875Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:38.093310715Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:38.093313196Z 
+2025-09-09T15:21:38.093315836Z Using SQLite fallback
+2025-09-09T15:21:38.093318805Z 127.0.0.1 - - [09/Sep/2025:15:21:38 +0000] "GET /sales HTTP/1.1" 200 4804 "https://inventory-management-j374.onrender.com/inventory" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:38.302851917Z 127.0.0.1 - - [09/Sep/2025:15:21:38 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/sales" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:38.30384512Z 127.0.0.1 - - [09/Sep/2025:15:21:38 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/sales" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:40.485791522Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:40.485816003Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:40.485819923Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:40.485822153Z 
+2025-09-09T15:21:40.485825013Z Using SQLite fallback
+2025-09-09T15:21:40.485828363Z 127.0.0.1 - - [09/Sep/2025:15:21:40 +0000] "GET /inventory HTTP/1.1" 200 42003 "https://inventory-management-j374.onrender.com/sales" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:40.698855437Z 127.0.0.1 - - [09/Sep/2025:15:21:40 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/inventory" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:40.700496715Z 127.0.0.1 - - [09/Sep/2025:15:21:40 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/inventory" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:48.250518835Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:48.250538236Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:48.250543146Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:48.250545916Z 
+2025-09-09T15:21:48.250548956Z Using SQLite fallback
+2025-09-09T15:21:48.250552346Z 127.0.0.1 - - [09/Sep/2025:15:21:48 +0000] "GET /logout HTTP/1.1" 302 199 "https://inventory-management-j374.onrender.com/inventory" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:48.423877995Z 127.0.0.1 - - [09/Sep/2025:15:21:48 +0000] "GET /login HTTP/1.1" 200 3232 "https://inventory-management-j374.onrender.com/inventory" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:49.803209858Z 127.0.0.1 - - [09/Sep/2025:15:21:49 +0000] "GET /logout HTTP/1.1" 302 229 "https://www.google.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:50.313939158Z 127.0.0.1 - - [09/Sep/2025:15:21:50 +0000] "GET /login?next=%2Flogout HTTP/1.1" 200 3414 "https://www.google.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:21:59.743408683Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:59.743440314Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:59.74626082Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:59.74627099Z 
+2025-09-09T15:21:59.746305261Z Using SQLite fallback
+2025-09-09T15:21:59.746309341Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:21:59.746313031Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:59.746315871Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:21:59.746318601Z 
+2025-09-09T15:21:59.746321321Z Using SQLite fallback
+2025-09-09T15:21:59.746326661Z 127.0.0.1 - - [09/Sep/2025:15:21:59 +0000] "POST /login HTTP/1.1" 302 189 "https://inventory-management-j374.onrender.com/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:22:00.969790606Z Attempting PostgreSQL connection to: postgresql://postgres:0R6kjqsOrCqrsDfp@aws-0-ap-so...
+2025-09-09T15:22:00.969818087Z PostgreSQL connection failed: connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:22:00.969822157Z connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.74.252.201), port 6543 failed: FATAL:  Tenant or user not found
+2025-09-09T15:22:00.969825087Z 
+2025-09-09T15:22:00.969828567Z Using SQLite fallback
+2025-09-09T15:22:00.969834157Z 127.0.0.1 - - [09/Sep/2025:15:22:00 +0000] "GET / HTTP/1.1" 200 10171 "https://inventory-management-j374.onrender.com/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:22:01.163349052Z 127.0.0.1 - - [09/Sep/2025:15:22:01 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+2025-09-09T15:22:01.198837367Z 127.0.0.1 - - [09/Sep/2025:15:22:01 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://inventory-management-j374.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
