@@ -5,7 +5,8 @@
       "Bash(del inventory.db)",
       "Bash(git remote add:*)",
       "Bash(dir)",
-      "Bash(del nul)"
+      "Bash(del nul)",
+      "Bash(git push:*)"
     ],
     "defaultMode": "bypassPermissions"
   }

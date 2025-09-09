@@ -1,0 +1,50 @@
+2025-09-09T14:15:02.300612274Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+2025-09-09T14:15:07.129818449Z ==> Running 'gunicorn app:app'
+2025-09-09T14:15:09.544514869Z Traceback (most recent call last):
+2025-09-09T14:15:09.606929614Z   File "/opt/render/project/src/.venv/bin/gunicorn", line 8, in <module>
+2025-09-09T14:15:09.606944915Z     sys.exit(run())
+2025-09-09T14:15:09.606948125Z              ~~~^^
+2025-09-09T14:15:09.606953565Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 67, in run
+2025-09-09T14:15:09.606959046Z     WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]").run()
+2025-09-09T14:15:09.606961826Z     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+2025-09-09T14:15:09.606964226Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/base.py", line 236, in run
+2025-09-09T14:15:09.606966676Z     super().run()
+2025-09-09T14:15:09.606968966Z     ~~~~~~~~~~~^^
+2025-09-09T14:15:09.606971346Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/base.py", line 72, in run
+2025-09-09T14:15:09.606973676Z     Arbiter(self).run()
+2025-09-09T14:15:09.606976276Z     ~~~~~~~^^^^^^
+2025-09-09T14:15:09.606978697Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/arbiter.py", line 58, in __init__
+2025-09-09T14:15:09.606980987Z     self.setup(app)
+2025-09-09T14:15:09.606983207Z     ~~~~~~~~~~^^^^^
+2025-09-09T14:15:09.606985537Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/arbiter.py", line 118, in setup
+2025-09-09T14:15:09.606988027Z     self.app.wsgi()
+2025-09-09T14:15:09.606990607Z     ~~~~~~~~~~~~~^^
+2025-09-09T14:15:09.606993437Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/base.py", line 67, in wsgi
+2025-09-09T14:15:09.606997008Z     self.callable = self.load()
+2025-09-09T14:15:09.606999398Z                     ~~~~~~~~~^^
+2025-09-09T14:15:09.607001998Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+2025-09-09T14:15:09.607004538Z     return self.load_wsgiapp()
+2025-09-09T14:15:09.607007068Z            ~~~~~~~~~~~~~~~~~^^
+2025-09-09T14:15:09.607010178Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+2025-09-09T14:15:09.607013159Z     return util.import_app(self.app_uri)
+2025-09-09T14:15:09.607015369Z            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+2025-09-09T14:15:09.607017619Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/gunicorn/util.py", line 371, in import_app
+2025-09-09T14:15:09.607019729Z     mod = importlib.import_module(module)
+2025-09-09T14:15:09.607022309Z   File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+2025-09-09T14:15:09.607024599Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-09-09T14:15:09.607027079Z            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-09T14:15:09.60702953Z   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+2025-09-09T14:15:09.60703199Z   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+2025-09-09T14:15:09.60703439Z   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+2025-09-09T14:15:09.60703665Z   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+2025-09-09T14:15:09.607050421Z   File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+2025-09-09T14:15:09.607053321Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2025-09-09T14:15:09.607055661Z   File "/opt/render/project/src/app.py", line 6, in <module>
+2025-09-09T14:15:09.607058001Z     import database_cloud as database
+2025-09-09T14:15:09.607071242Z   File "/opt/render/project/src/database_cloud.py", line 14, in <module>
+2025-09-09T14:15:09.607073862Z     import psycopg2
+2025-09-09T14:15:09.607076412Z   File "/opt/render/project/src/.venv/lib/python3.13/site-packages/psycopg2/__init__.py", line 51, in <module>
+2025-09-09T14:15:09.607079033Z     from psycopg2._psycopg import (                     # noqa
+2025-09-09T14:15:09.607081553Z     ...<10 lines>...
+2025-09-09T14:15:09.607083983Z     )
+2025-09-09T14:15:09.607088353Z ImportError: /opt/render/project/src/.venv/lib/python3.13/site-packages/psycopg2/_psycopg.cpython-313-x86_64-linux-gnu.so: undefined symbol: _PyInterpreterState_Get
