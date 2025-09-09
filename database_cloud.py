@@ -139,14 +139,8 @@ def init_database():
 def get_connection():
     """데이터베이스 연결 반환"""
     if USE_POSTGRESQL:
-        result = urlparse(DATABASE_URL)
-        return psycopg2.connect(
-            database=result.path[1:],
-            user=result.username,
-            password=result.password,
-            host=result.hostname,
-            port=result.port
-        )
+        # DATABASE_URL을 직접 사용 (psycopg2가 자동으로 파싱)
+        return psycopg2.connect(DATABASE_URL)
     else:
         return sqlite3.connect('inventory.db')
 
