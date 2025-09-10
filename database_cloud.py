@@ -140,10 +140,27 @@ def get_connection():
     """데이터베이스 연결 반환"""
     if USE_POSTGRESQL:
         try:
-            # Supabase Direct Connection
+            # Direct connection 강제 (pooler 대신)
+            direct_url = DATABASE_URL
+            # pooler URL이면 direct로 변경
+            if 'pooler.supabase.com:6543' in direct_url:
+                # pooler URL을 direct URL로 변경
+                # postgres.zbovkkoffkiivhpddlxf -> db.zbovkkoffkiivhpddlxf
+                # pooler.supabase.com:6543 -> supabase.co:5432
+                direct_url = direct_url.replace('postgres.zbovkkoffkiivhpddlxf', 'db.zbovkkoffkiivhpddlxf')
+                direct_url = direct_url.replace('pooler.supabase.com:6543', 'supabase.co:5432')
+                print(f"Converting pooler URL to direct connection...")
+            
             print(f"Attempting PostgreSQL connection to Supabase...")
-            print(f"Database URL: {DATABASE_URL[:30]}...")  # URL 일부만 출력
-            conn = psycopg2.connect(DATABASE_URL)
+            print(f"Database URL: {direct_url[:30]}...")  # URL 일부만 출력
+            
+            # sslmode 추가하여 연결 시도
+            if '?' not in direct_url:
+                direct_url += '?sslmode=require'
+            elif 'sslmode' not in direct_url:
+                direct_url += '&sslmode=require'
+            
+            conn = psycopg2.connect(direct_url)
             print("✅ PostgreSQL connection successful!")
             return conn
         except Exception as e:
