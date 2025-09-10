@@ -140,16 +140,16 @@ def get_connection():
     """데이터베이스 연결 반환"""
     if USE_POSTGRESQL:
         try:
-            # Direct Connection URL 사용 (Pooler 제거)
-            encoded_url = DATABASE_URL
-            print(f"Attempting PostgreSQL connection...")
-            conn = psycopg2.connect(encoded_url)
-            print("PostgreSQL connection successful!")
+            # Supabase Direct Connection
+            print(f"Attempting PostgreSQL connection to Supabase...")
+            print(f"Database URL: {DATABASE_URL[:30]}...")  # URL 일부만 출력
+            conn = psycopg2.connect(DATABASE_URL)
+            print("✅ PostgreSQL connection successful!")
             return conn
         except Exception as e:
             # PostgreSQL 연결 실패시 SQLite 폴백
-            print(f"PostgreSQL connection failed: {str(e)}")
-            print("Using SQLite fallback")
+            print(f"❌ PostgreSQL connection failed: {str(e)}")
+            print("📁 Using SQLite fallback")
             return sqlite3.connect('inventory.db')
     else:
         return sqlite3.connect('inventory.db')
